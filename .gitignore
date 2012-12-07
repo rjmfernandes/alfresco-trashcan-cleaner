@@ -5,5 +5,5 @@ assembly
 .settings
 .project
 .classpath
-
+bin/**/*
 
