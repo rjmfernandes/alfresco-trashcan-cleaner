@@ -6,4 +6,6 @@ assembly
 .project
 .classpath
 bin/**/*
-
+bin
+src/log4j.properties
+alfresco.log
