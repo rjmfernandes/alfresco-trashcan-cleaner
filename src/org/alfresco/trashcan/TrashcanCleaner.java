@@ -95,6 +95,8 @@ public class TrashcanCleaner {
 	}
 
 	private boolean olderThanDaysToKeep(NodeRef node) {
+		if(daysToKeep<=0)
+			return true;
 		Date archivedDate = (Date) nodeService.getProperty(node,
 				ContentModel.PROP_ARCHIVED_DATE);
 		return daysToKeep * DAYS_TO_MILLIS < System.currentTimeMillis()

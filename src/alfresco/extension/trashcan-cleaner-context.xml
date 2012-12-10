@@ -10,6 +10,8 @@
 				<entry key="transactionService" value-ref="transactionService" />
 				<entry key="authenticationComponent" value-ref="authenticationComponent" />
 				<entry key="jobLockService" value-ref="jobLockService" />
+				<entry key="trashcan.daysToKeep" value="${trashcan.daysToKeep}" />
+				<entry key="trashcan.deleteBatchCount" value="${trashcan.deleteBatchCount}" />
 			</map>
 		</property>
 	</bean>
