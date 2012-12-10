@@ -48,14 +48,20 @@ public class TrashcanCleanerJob extends AbstractScheduledLockedJob {
 				.getJobDataMap().get("transactionService");
 		authenticationComponent = (AuthenticationComponent) jobContext
 				.getJobDetail().getJobDataMap().get("authenticationComponent");
-		Integer c_daysToKeep = (Integer) jobContext.getJobDetail()
-				.getJobDataMap().get("trashcan.daysToKeep");
-		Integer c_deleteBatchCount = (Integer) jobContext.getJobDetail()
-				.getJobDataMap().get("trashcan.deleteBatchCount");
-		daysToKeep = c_daysToKeep != null ? c_daysToKeep : daysToKeep;
-		deleteBatchCount = c_deleteBatchCount != null ? c_deleteBatchCount
-				: deleteBatchCount;
+		daysToKeep = getSetupValue("trashcan.daysToKeep", daysToKeep,
+				jobContext);
+		deleteBatchCount = getSetupValue("trashcan.deleteBatchCount",
+				deleteBatchCount, jobContext);
 
+	}
+
+	private static int getSetupValue(String parameterName, int defaultValue,
+			JobExecutionContext jobContext) {
+		String parameterValue = (String) jobContext.getJobDetail()
+				.getJobDataMap().get(parameterName);
+		return parameterValue != null && !parameterValue.trim().equals("") ? Integer
+				.parseInt(parameterValue)
+				: defaultValue;
 	}
 
 }
