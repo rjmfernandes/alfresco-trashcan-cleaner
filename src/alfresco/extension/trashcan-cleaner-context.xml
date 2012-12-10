@@ -20,7 +20,7 @@
 		<property name="jobDetail" ref="trashcanCleaner" />
 		<!-- Repeat hourly on the half hour -->
 		<property name="cronExpression">
-			<value>0 30 * * * ?</value>
+			<value>${trashcan.cron}</value>
 		</property>
 	</bean>
 </beans>
