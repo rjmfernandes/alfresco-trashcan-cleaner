@@ -32,7 +32,7 @@ public class TrashcanCleanerJob extends AbstractScheduledLockedJob {
 	private void cleanInTransaction() {
 		RetryingTransactionCallback<Object> txnWork = new RetryingTransactionCallback<Object>() {
 			public Object execute() throws Exception {
-				TrashcanCleaner cleaner = new TrashcanCleaner(nodeService);
+				TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,deleteBatchCount,daysToKeep);
 				cleaner.clean();
 				return null;
 			}
