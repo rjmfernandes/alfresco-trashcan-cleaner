@@ -1,10 +1,17 @@
 target/**/*
 target
+*/target/**/*
+*/target
+*/alf_data_dev
+*/alf_data_dev/**/*
 assembly/**/*
 assembly
 .settings
 .project
 .classpath
+*/.settings
+*/.projects
+*/.classpath
 bin/**/*
 bin
 src/log4j.properties

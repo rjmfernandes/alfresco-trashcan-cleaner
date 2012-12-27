@@ -20,8 +20,6 @@ import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.transaction.TransactionService;
 import org.alfresco.util.ApplicationContextHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -33,7 +31,7 @@ public class TrashcanCleanerTest extends TestCase {
 
 	private static final int BATCH_SIZE = 1000;
 
-	private static Log logger = LogFactory.getLog(TrashcanCleanerTest.class);
+	//private static Log logger = LogFactory.getLog(TrashcanCleanerTest.class);
 
 	private static ApplicationContext applicationContext = ApplicationContextHelper
 			.getApplicationContext();
@@ -78,14 +76,14 @@ public class TrashcanCleanerTest extends TestCase {
 			TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,BATCH_SIZE,-1);
 			createAndDeleteNodes(nodesCreate);
 			long nodesToDelete = getNumberOfNodesInTrashcan();
-			logger.info(String.format("Existing nodes to delete: %s",
+			System.out.println(String.format("Existing nodes to delete: %s",
 					nodesToDelete));
 			cleaner.clean();
 			nodesToDelete = getNumberOfNodesInTrashcan();
-			logger.info(String.format("Existing nodes to delete after: %s",
+			System.out.println(String.format("Existing nodes to delete after: %s",
 					nodesToDelete));
 			assertEquals(nodesToDelete, nodesRemain);
-			logger.info("Clean trashcan...");
+			System.out.println("Clean trashcan...");
 			cleaner.clean();
 			userTransaction1.commit();
 		} catch (Throwable e) {
