@@ -1,4 +1,7 @@
 target/**/*
+.DS_Store
+*/.DS_Store
+alf_data_dev/**/*
 target
 */target/**/*
 */target
