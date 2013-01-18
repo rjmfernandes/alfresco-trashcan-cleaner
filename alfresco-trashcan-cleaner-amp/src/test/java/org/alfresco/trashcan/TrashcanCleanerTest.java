@@ -24,102 +24,117 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * 
- * @author rjmfernandes@gmail.com
+ * @author Rui Fernandes
  * 
  */
-public class TrashcanCleanerTest extends TestCase {
+public class TrashcanCleanerTest extends TestCase
+{
 
 	private static final int BATCH_SIZE = 1000;
 
-	//private static Log logger = LogFactory.getLog(TrashcanCleanerTest.class);
+	// private static Log logger = LogFactory.getLog(TrashcanCleanerTest.class);
 
 	private static ApplicationContext applicationContext = ApplicationContextHelper
-			.getApplicationContext();
+	        .getApplicationContext();
 	protected NodeService nodeService;
 	protected TransactionService transactionService;
 	protected Repository repository;
 	protected AuthenticationComponent authenticationComponent;
 
 	@Override
-	public void setUp() {
+	public void setUp()
+	{
 		nodeService = (NodeService) applicationContext.getBean("nodeService");
 		authenticationComponent = (AuthenticationComponent) applicationContext
-				.getBean("authenticationComponent");
+		        .getBean("authenticationComponent");
 		transactionService = (TransactionService) applicationContext
-				.getBean("transactionComponent");
+		        .getBean("transactionComponent");
 		repository = (Repository) applicationContext
-				.getBean("repositoryHelper");
+		        .getBean("repositoryHelper");
 
 		// Authenticate as the system user
 		authenticationComponent.setSystemUserAsCurrentUser();
 	}
 
 	@Override
-	public void tearDown() {
+	public void tearDown()
+	{
 		authenticationComponent.clearCurrentSecurityContext();
 	}
 
-	public void testCleanSimple() throws Throwable {
+	public void testCleanSimple() throws Throwable
+	{
 		cleanBatchTest(1, 0);
 	}
 
-	public void testCleanBatch() throws Throwable {
+	public void testCleanBatch() throws Throwable
+	{
 		cleanBatchTest(BATCH_SIZE + 1, 1);
 	}
 
 	private void cleanBatchTest(int nodesCreate, int nodesRemain)
-			throws Throwable {
+	        throws Throwable
+	{
 		UserTransaction userTransaction1 = transactionService
-				.getUserTransaction();
-		try {
+		        .getUserTransaction();
+		try
+		{
 			userTransaction1.begin();
-			TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,BATCH_SIZE,-1);
+			TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,
+			        BATCH_SIZE, -1);
 			createAndDeleteNodes(nodesCreate);
 			long nodesToDelete = getNumberOfNodesInTrashcan();
 			System.out.println(String.format("Existing nodes to delete: %s",
-					nodesToDelete));
+			        nodesToDelete));
 			cleaner.clean();
 			nodesToDelete = getNumberOfNodesInTrashcan();
-			System.out.println(String.format("Existing nodes to delete after: %s",
-					nodesToDelete));
+			System.out.println(String.format(
+			        "Existing nodes to delete after: %s", nodesToDelete));
 			assertEquals(nodesToDelete, nodesRemain);
 			System.out.println("Clean trashcan...");
 			cleaner.clean();
 			userTransaction1.commit();
-		} catch (Throwable e) {
-			try {
+		} catch (Throwable e)
+		{
+			try
+			{
 				userTransaction1.rollback();
-			} catch (IllegalStateException ee) {
+			} catch (IllegalStateException ee)
+			{
 			}
 			throw e;
 		}
 	}
 
-	private void createAndDeleteNodes(int n) {
-		for (int i = n; i > 0; i--) {
+	private void createAndDeleteNodes(int n)
+	{
+		for (int i = n; i > 0; i--)
+		{
 			createAndDeleteNode();
 		}
 
 	}
 
-	private void createAndDeleteNode() {
+	private void createAndDeleteNode()
+	{
 		NodeRef companyHome = repository.getCompanyHome();
 		String name = "Sample (" + System.currentTimeMillis() + ")";
 		Map<QName, Serializable> contentProps = new HashMap<QName, Serializable>();
 		contentProps.put(ContentModel.PROP_NAME, name);
 		ChildAssociationRef association = nodeService.createNode(companyHome,
-				ContentModel.ASSOC_CONTAINS, QName.createQName(
-						NamespaceService.CONTENT_MODEL_PREFIX, name),
-				ContentModel.TYPE_CONTENT, contentProps);
+		        ContentModel.ASSOC_CONTAINS,
+		        QName.createQName(NamespaceService.CONTENT_MODEL_PREFIX, name),
+		        ContentModel.TYPE_CONTENT, contentProps);
 		nodeService.deleteNode(association.getChildRef());
 
 	}
-	
-	private long getNumberOfNodesInTrashcan() {
+
+	private long getNumberOfNodesInTrashcan()
+	{
 		StoreRef archiveStore = new StoreRef("archive://SpacesStore");
 		NodeRef archiveRoot = nodeService.getRootNode(archiveStore);
 		List<ChildAssociationRef> childAssocs = nodeService
-				.getChildAssocs(archiveRoot);
+		        .getChildAssocs(archiveRoot);
 		return childAssocs.size();
 
 	}

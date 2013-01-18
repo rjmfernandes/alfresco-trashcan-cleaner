@@ -5,6 +5,6 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-    <display-name>Alfresco Runner</display-name>
-    <description>Alfresco Runner</description>
+	<display-name>Alfresco Runner</display-name>
+	<description>Alfresco Runner</description>
 </web-app>

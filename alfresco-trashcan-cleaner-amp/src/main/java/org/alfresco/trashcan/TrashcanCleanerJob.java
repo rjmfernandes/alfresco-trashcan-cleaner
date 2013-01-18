@@ -10,10 +10,11 @@ import org.quartz.JobExecutionException;
 
 /**
  * 
- * @author rjmfernandes@gmail.com
+ * @author Rui Fernandes
  * 
  */
-public class TrashcanCleanerJob extends AbstractScheduledLockedJob {
+public class TrashcanCleanerJob extends AbstractScheduledLockedJob
+{
 
 	protected NodeService nodeService;
 	protected TransactionService transactionService;
@@ -23,45 +24,51 @@ public class TrashcanCleanerJob extends AbstractScheduledLockedJob {
 
 	@Override
 	public void executeJob(JobExecutionContext jobContext)
-			throws JobExecutionException {
+	        throws JobExecutionException
+	{
 		setUp(jobContext);
 		authenticationComponent.setSystemUserAsCurrentUser();
 		cleanInTransaction();
 	}
 
-	private void cleanInTransaction() {
-		RetryingTransactionCallback<Object> txnWork = new RetryingTransactionCallback<Object>() {
-			public Object execute() throws Exception {
-				TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,deleteBatchCount,daysToKeep);
+	private void cleanInTransaction()
+	{
+		RetryingTransactionCallback<Object> txnWork = new RetryingTransactionCallback<Object>()
+		{
+			public Object execute() throws Exception
+			{
+				TrashcanCleaner cleaner = new TrashcanCleaner(nodeService,
+				        deleteBatchCount, daysToKeep);
 				cleaner.clean();
 				return null;
 			}
 		};
 		transactionService.getRetryingTransactionHelper().doInTransaction(
-				txnWork);
+		        txnWork);
 	}
 
-	private void setUp(JobExecutionContext jobContext) {
+	private void setUp(JobExecutionContext jobContext)
+	{
 		nodeService = (NodeService) jobContext.getJobDetail().getJobDataMap()
-				.get("nodeService");
+		        .get("nodeService");
 		transactionService = (TransactionService) jobContext.getJobDetail()
-				.getJobDataMap().get("transactionService");
+		        .getJobDataMap().get("transactionService");
 		authenticationComponent = (AuthenticationComponent) jobContext
-				.getJobDetail().getJobDataMap().get("authenticationComponent");
+		        .getJobDetail().getJobDataMap().get("authenticationComponent");
 		daysToKeep = getSetupValue("trashcan.daysToKeep", daysToKeep,
-				jobContext);
+		        jobContext);
 		deleteBatchCount = getSetupValue("trashcan.deleteBatchCount",
-				deleteBatchCount, jobContext);
+		        deleteBatchCount, jobContext);
 
 	}
 
 	private static int getSetupValue(String parameterName, int defaultValue,
-			JobExecutionContext jobContext) {
+	        JobExecutionContext jobContext)
+	{
 		String parameterValue = (String) jobContext.getJobDetail()
-				.getJobDataMap().get(parameterName);
+		        .getJobDataMap().get(parameterName);
 		return parameterValue != null && !parameterValue.trim().equals("") ? Integer
-				.parseInt(parameterValue)
-				: defaultValue;
+		        .parseInt(parameterValue) : defaultValue;
 	}
 
 }
