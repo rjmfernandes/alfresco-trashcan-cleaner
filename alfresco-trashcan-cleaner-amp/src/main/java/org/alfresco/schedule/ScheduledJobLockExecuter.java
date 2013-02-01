@@ -46,6 +46,11 @@ import org.quartz.JobExecutionException;
  * method of this class will execute the job taking care of all cluster aware
  * lockings.
  * 
+ * This code is based on original code by Derek Hurley on
+ * {@link org.alfresco.repo.content.cleanup.ContentStoreCleaner
+ * ContentStoreCleaner}. Extracting the generic locking code in order to be
+ * reused and avoid code duplication.
+ * 
  * @author Rui Fernandes
  * 
  */
@@ -67,8 +72,11 @@ public class ScheduledJobLockExecuter
 	 * @param jobLockService
 	 *            the {@link org.alfresco.repo.lock.JobLockService
 	 *            JobLockService}
-	 * @param name the name of the job to be used for the lock registry
-	 * @param job the {@link org.alfresco.schedule.AbstractScheduledLockedJob job} to be executed
+	 * @param name
+	 *            the name of the job to be used for the lock registry
+	 * @param job
+	 *            the {@link org.alfresco.schedule.AbstractScheduledLockedJob
+	 *            job} to be executed
 	 */
 	public ScheduledJobLockExecuter(JobLockService jobLockService, String name,
 	        AbstractScheduledLockedJob job)
@@ -153,6 +161,11 @@ public class ScheduledJobLockExecuter
 				jobLockService.refreshLock(lockToken, lockQName, LOCK_TTL);
 				lastLock = System.currentTimeMillis();
 				lockPair = new Pair<Long, String>(lastLock, lockToken);
+				// I think it was missing the following code line, on the
+				// original
+				// org.alfresco.repo.content.cleanup.ContentStoreCleaner locking
+				// code - Rui Fernandes
+				lockThreadLocal.set(lockPair);
 			}
 		}
 	}
