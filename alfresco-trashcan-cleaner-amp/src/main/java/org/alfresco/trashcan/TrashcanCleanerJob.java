@@ -58,8 +58,8 @@ public class TrashcanCleanerJob extends AbstractScheduledLockedJob
 	protected NodeService nodeService;
 	protected TransactionService transactionService;
 	protected AuthenticationComponent authenticationComponent;
-	private int deleteBatchCount = 1000;
-	private int daysToKeep = -1;
+	private int deleteBatchCount;
+	private int daysToKeep;
 
 	/**
 	 * The implementation of the
@@ -117,10 +117,10 @@ public class TrashcanCleanerJob extends AbstractScheduledLockedJob
 		        .getJobDataMap().get("transactionService");
 		authenticationComponent = (AuthenticationComponent) jobContext
 		        .getJobDetail().getJobDataMap().get("authenticationComponent");
-		daysToKeep = getSetupValue("trashcan.daysToKeep", daysToKeep,
-		        jobContext);
+		daysToKeep = getSetupValue("trashcan.daysToKeep",
+		        TrashcanCleaner.DEFAULT_DAYS_TO_KEEP, jobContext);
 		deleteBatchCount = getSetupValue("trashcan.deleteBatchCount",
-		        deleteBatchCount, jobContext);
+		        TrashcanCleaner.DEFAULT_DELETE_BATCH_COUNT, jobContext);
 
 	}
 

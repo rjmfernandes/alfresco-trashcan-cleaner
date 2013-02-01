@@ -61,13 +61,16 @@ import org.apache.commons.logging.LogFactory;
 public class TrashcanCleaner
 {
 
+	protected static final int DEFAULT_DAYS_TO_KEEP = -1;
+	protected static final int DEFAULT_DELETE_BATCH_COUNT = 1000;
+	private static final long DAYS_TO_MILLIS = 1000 * 60 * 60 * 24;
+
 	private static Log logger = LogFactory.getLog(TrashcanCleaner.class);
 
 	private NodeService nodeService;
 	private String archiveStoreUrl = "archive://SpacesStore";
-	private int deleteBatchCount = 1000;
-	private int daysToKeep = -1;
-	private static final long DAYS_TO_MILLIS = 1000 * 60 * 60 * 24;
+	private int deleteBatchCount = DEFAULT_DELETE_BATCH_COUNT;
+	private int daysToKeep = DEFAULT_DAYS_TO_KEEP;
 
 	/**
 	 * 
