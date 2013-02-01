@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
+ * http://www.alfresco.com/legal/licensing"
+ */
 package org.alfresco.trashcan;
 
 import java.io.Serializable;
@@ -24,6 +48,8 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * 
+ * Test class for {@link org.alfresco.trashcan.TrashcanCleaner TrashcanCleaner}.
+ * 
  * @author Rui Fernandes
  * 
  */
@@ -41,6 +67,11 @@ public class TrashcanCleanerTest extends TestCase
 	protected Repository repository;
 	protected AuthenticationComponent authenticationComponent;
 
+	/**
+	 * 
+	 * Sets services and current user as system.
+	 * 
+	 */
 	@Override
 	public void setUp()
 	{
@@ -56,22 +87,52 @@ public class TrashcanCleanerTest extends TestCase
 		authenticationComponent.setSystemUserAsCurrentUser();
 	}
 
+	/**
+	 * 
+	 * Clears security context.
+	 * 
+	 */
 	@Override
 	public void tearDown()
 	{
 		authenticationComponent.clearCurrentSecurityContext();
 	}
 
+	/**
+	 * 
+	 * Tests that existing just one node deleted the cleaning of the trashcan
+	 * will delete it using the default configuration.
+	 * 
+	 * @throws Throwable
+	 */
 	public void testCleanSimple() throws Throwable
 	{
 		cleanBatchTest(1, 0);
 	}
 
+	/**
+	 * 
+	 * Tests that existing the maximum number of nodes to be deleted in a single
+	 * trashcan clean execution plus one, after the deletion just a single node
+	 * is present in archive.
+	 * 
+	 * @throws Throwable
+	 */
 	public void testCleanBatch() throws Throwable
 	{
 		cleanBatchTest(BATCH_SIZE + 1, 1);
 	}
 
+	/**
+	 * 
+	 * Generic method that asserts that for the <b>nodesCreate</b> existing on
+	 * archive store the execution of trashcan clean will leave remaining
+	 * undeleted <b>nodesRemain</b>.
+	 * 
+	 * @param nodesCreate
+	 * @param nodesRemain
+	 * @throws Throwable
+	 */
 	private void cleanBatchTest(int nodesCreate, int nodesRemain)
 	        throws Throwable
 	{
@@ -106,6 +167,12 @@ public class TrashcanCleanerTest extends TestCase
 		}
 	}
 
+	/**
+	 * 
+	 * Creates and deletes the specified number of nodes.
+	 * 
+	 * @param n
+	 */
 	private void createAndDeleteNodes(int n)
 	{
 		for (int i = n; i > 0; i--)
@@ -115,6 +182,12 @@ public class TrashcanCleanerTest extends TestCase
 
 	}
 
+	/**
+	 * 
+	 * Creates and delete a single node whose name is based on the current time
+	 * in milliseconds.
+	 * 
+	 */
 	private void createAndDeleteNode()
 	{
 		NodeRef companyHome = repository.getCompanyHome();
@@ -129,6 +202,12 @@ public class TrashcanCleanerTest extends TestCase
 
 	}
 
+	/**
+	 * 
+	 * It returns the number of nodes present on trashcan.
+	 * 
+	 * @return
+	 */
 	private long getNumberOfNodesInTrashcan()
 	{
 		StoreRef archiveStore = new StoreRef("archive://SpacesStore");

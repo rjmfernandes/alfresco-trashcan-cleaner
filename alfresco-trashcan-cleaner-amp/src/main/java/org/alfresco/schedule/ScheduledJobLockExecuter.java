@@ -1,3 +1,27 @@
+/*
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+ * As a special exception to the terms and conditions of version 2.0 of 
+ * the GPL, you may redistribute this Program in connection with Free/Libre 
+ * and Open Source Software ("FLOSS") applications as described in Alfresco's 
+ * FLOSS exception.  You should have recieved a copy of the text describing 
+ * the FLOSS exception, and it is also available here: 
+ * http://www.alfresco.com/legal/licensing"
+ */
 package org.alfresco.schedule;
 
 import org.alfresco.repo.lock.JobLockService;
@@ -12,6 +36,15 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
+ * 
+ * This class encapsulates the {@link org.alfresco.repo.lock.JobLockService
+ * JobLockService} usage in order to guarantee that a job is not executed
+ * simultaneously in more than one node in a cluster. After instantiated passing
+ * in constructor {@link org.alfresco.schedule.AbstractScheduledLockedJob job}
+ * to be executed, as well as the name of the to be locked job and the
+ * {@link org.alfresco.repo.lock.JobLockService JobLockService}, the execute
+ * method of this class will execute the job taking care of all cluster aware
+ * lockings.
  * 
  * @author Rui Fernandes
  * 
@@ -29,6 +62,14 @@ public class ScheduledJobLockExecuter
 	private QName lockQName;
 	private AbstractScheduledLockedJob job;
 
+	/**
+	 * 
+	 * @param jobLockService
+	 *            the {@link org.alfresco.repo.lock.JobLockService
+	 *            JobLockService}
+	 * @param name the name of the job to be used for the lock registry
+	 * @param job the {@link org.alfresco.schedule.AbstractScheduledLockedJob job} to be executed
+	 */
 	public ScheduledJobLockExecuter(JobLockService jobLockService, String name,
 	        AbstractScheduledLockedJob job)
 	{
@@ -38,6 +79,16 @@ public class ScheduledJobLockExecuter
 		this.job = job;
 	}
 
+	/**
+	 * 
+	 * It will execute the
+	 * {@link org.alfresco.schedule.AbstractScheduledLockedJob job} passed on
+	 * instantiation taking care of all cluster aware lockings.
+	 * 
+	 * @param jobContext
+	 *            the usual quartz job context
+	 * @throws JobExecutionException
+	 */
 	public void execute(JobExecutionContext jobContext)
 	        throws JobExecutionException
 	{
