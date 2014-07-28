@@ -247,7 +247,7 @@ public class TrashcanCleaner
 		List<ChildAssociationRef> childs=new ArrayList<ChildAssociationRef>();
 		for(ChildAssociationRef childAssoc:allChilds){
 			NodeRef child=childAssoc.getChildRef();
-			if(nodeService.getType(child)!=ContentModel.TYPE_ARCHIVE_USER){
+			if(!ContentModel.TYPE_ARCHIVE_USER.equals(nodeService.getType(child))){
 				childs.add(childAssoc);
 			}
 		}
