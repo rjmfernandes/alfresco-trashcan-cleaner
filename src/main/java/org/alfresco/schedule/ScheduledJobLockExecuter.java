@@ -24,6 +24,7 @@
  */
 package org.alfresco.schedule;
 
+
 import org.alfresco.repo.lock.JobLockService;
 import org.alfresco.repo.lock.LockAcquisitionException;
 import org.alfresco.service.namespace.NamespaceService;
